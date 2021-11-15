@@ -33,7 +33,7 @@ services:
     - ./notebook:/home/jovyan/work
     
   dremio:
-    image: dremio/dremio-ee-staging:19.0.0-202110240041050374-102d9ebd
+    image: dremio/dremio-oss
     ports: 
     - 9047:9047
     - 31010:31010

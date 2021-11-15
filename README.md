@@ -12,14 +12,13 @@ Install project with docker-compose
 
 Step 1: Create or use an existing Azure Storage Account with Data Lake Storage
 
-Step 2: Create an Azure AD service principal that can access your Azure Storage Accont 
-https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal
+Step 2: Obtain storage your account secrect
 
 Step 4: clone repo
 
 ```bash
-git clone GITHUB_CLONE_HOME
-cd GITHUB_CLONE_HOME
+git clone https://github.com/dremio-brock/IcebergDremio.git
+cd IcebergDremio
 ```
 
 Step 3: Configure copy and rename conf/metastore-site-SAMPLE.xml to conf/metastore-site.xml

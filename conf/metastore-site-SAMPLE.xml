@@ -1,0 +1,47 @@
+<configuration>
+    <property>
+        <name>metastore.thrift.uris</name>
+        <value>thrift://0.0.0.0:9083</value>
+        <description>Thrift URI for the remote metastore. Used by metastore client to connect to remote metastore.</description>
+    </property>
+    <property>
+        <name>metastore.task.threads.always</name>
+        <value>org.apache.hadoop.hive.metastore.events.EventCleanerTask,org.apache.hadoop.hive.metastore.MaterializationsCacheCleanerTask</value>
+    </property>
+    <property>
+        <name>metastore.expression.proxy</name>
+        <value>org.apache.hadoop.hive.metastore.DefaultPartitionExpressionProxy</value>
+    </property>
+    <property>
+        <name>metastore.warehouse.dir</name>
+        <value>wasbs://{azure-adls-container}@{azure-adls-container}.blob.core.windows.net/</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionDriverName</name>
+        <value>org.postgresql.Driver</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionURL</name>
+        <value>jdbc:postgresql://metastore-db:5432/metastore_db</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionUserName</name>
+        <value>admin</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionPassword</name>
+        <value>admin</value>
+    </property>
+    <property>
+  	    <name>fs.adl.impl</name>
+  	    <value>org.apache.hadoop.fs.adl.AdlFileSystem</value>
+    </property>
+    <property>
+  	    <name>fs.AbstractFileSystem.adl.impl</name>
+  	    <value>org.apache.hadoop.fs.adl.Adl</value>
+    </property>  
+    <property>
+  	    <name>fs.azure.account.key.{azure-adls-container}.blob.core.windows.net</name>
+  	    <value></value>
+    </property>
+</configuration>

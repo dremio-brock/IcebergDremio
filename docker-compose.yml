@@ -1,0 +1,40 @@
+version: "2"
+
+services:
+  db:
+    image: postgres
+    restart: always
+    ports:
+    - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+      POSTGRES_DB: metastore_db
+    container_name: metastore-db
+
+  hive-metastore:
+    build: .
+    image: hive-metastore:latest
+    ports:
+    - 9083:9083
+    volumes:
+    - ./scripts/entrypoint.sh:/entrypoint.sh
+    - ./conf/metastore-site.xml:/opt/apache-hive-metastore-3.0.0-bin/conf/metastore-site.xml
+    container_name: hive-metastore
+    depends_on:
+      - db
+      
+  notebook:
+    image: jupyter/pyspark-notebook
+    ports: 
+    - 4040:4040
+    - 8888:8888
+    volumes:
+    - ./notebook:/home/jovyan/work
+    
+  dremio:
+    image: dremio/dremio-ee-staging:19.0.0-202110240041050374-102d9ebd
+    ports: 
+    - 9047:9047
+    - 31010:31010
+    - 32010:32010

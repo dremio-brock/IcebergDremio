@@ -1,4 +1,4 @@
-version: "2"
+version: "3.5"
 
 services:
   db:
@@ -23,6 +23,7 @@ services:
     container_name: hive-metastore
     depends_on:
       - db
+      - storage
       
   notebook:
     image: jupyter/pyspark-notebook
@@ -31,10 +32,36 @@ services:
     - 8888:8888
     volumes:
     - ./notebook:/home/jovyan/work
+    container_name: jupyter-iceberg
     
   dremio:
-    image: dremio/dremio-oss
+    image: dremio/dremio-oss:19.0
     ports: 
     - 9047:9047
     - 31010:31010
     - 32010:32010
+    volumes:
+    - ./conf/metastore-site.xml:/opt/dremio/plugins/connectors/hive3.d/conf/core-site.xml
+    - ./conf/metastore-site.xml:/opt/dremio/plugins/connectors/hive3-ee.d/conf/core-site.xml
+    container_name: dremio-iceberg
+    
+  storage:
+    image: minio/minio
+    ports:
+    - 9000:9000
+    - 9001:9001
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_ACCESS_KEY: AKIAIOSFODNN7EXAMPLE
+      MINIO_SECRET_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    volumes:
+    - ./minio:/data
+    container_name: minio
+    command: server /data --console-address ":9001"
+
+networks:
+    default:
+      name: iceberg
+      driver: bridge
+    

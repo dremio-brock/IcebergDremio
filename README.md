@@ -1,5 +1,5 @@
 
-# Iceberg on ADLS with Dremio
+# Iceberg on ADLS / S3 / MINIO with Dremio via Hive or Hadoop catalog
 
 A brief description of what this project does and who it's for
 
@@ -10,7 +10,7 @@ A brief description of what this project does and who it's for
 
 Install project with docker-compose
 
-Step 1: Create or use an existing Azure Storage Account with Data Lake Storage
+Step 1: Create or use an existing Azure Storage Account with Data Lake Storage, AWS S3 account or use the local MINIO provided
 
 Step 2: Obtain storage your account secrect
 
@@ -21,19 +21,10 @@ git clone https://github.com/dremio-brock/IcebergDremio.git
 cd IcebergDremio
 ```
 
-Step 3: Configure copy and rename conf/metastore-site-SAMPLE.xml to conf/metastore-site.xml
-Fill in your azure storage account key and account information
+Step 3: Configure conf/metastore-site.xml 
+Uncomment the type of storage you wish to use and fill in your account information
 
-```bash
- <property>
-      <name>metastore.warehouse.dir</name>
-      <value>wasbs://{azure-adls-container}@{azure-adls-container}.blob.core.windows.net/iceberg/warehouse</value>
-  </property>
- <property>
-      <name>fs.azure.account.key.{azure-adls-container}.blob.core.windows.net</name>
-      <value></value>
-  </property>
-```
+*Note on first run with Minio, you will need to create a service account to get the key & secret. Hive will need to be restarted once the metastore-site.xml is updated.
    
 Step 4: Build and run
 
@@ -60,16 +51,27 @@ If you wish to demo loading streaming data from an api such as the one used here
 
 ## Setup Dremio
 
-
 - Open dremio by going to the url localhost:9047
 - Accept the EULA and create a user for Dremio
+- Enable Iceberg in Dremio follow the instructions here for enabling iceberg in Dremio: http://docs.dremio.com/data-formats/iceberg-enabling/
+
+## Hive Catalog:
+You can chose to use the hive catalog, or a hadoop catalog. If you are using the hive catalog you will need to use hive as your source. docker-compose is mounting your metastore-site.xml to the proper hive conf directory in Dremio. 
+
 - Add your Hive datasource by clicking the + button next to "Data Lake"
 - Select Hive 3.x
 - Give the source a name, fill in the URL as "hive-metastore"
-- Under Advanced options, add a new property
-     - name=fs.azure.account.key.{account}.blob.core.windows.net
-     - value=your account key
-- Enable Iceberg in Dremio follow the instructions here for enabling iceberg in Dremio: http://docs.dremio.com/data-formats/iceberg-enabling/
+
+## Hadoop Catalog:
+If you wish to use the hadoop catalog, you will need to add the data lake source for the storage type you are using.
+Additionally, you will need to add an advanced property to the source
+- iceberg.catalog_type
+ - hadoop
+
+
+*Note Minio requires extra steps outlined here: http://docs.dremio.com/data-sources/s3/#configuring-s3-for-minio
+
+## 
 
 After Dremio is setup, you can begin querying Iceberg tables. \
 \
@@ -79,12 +81,13 @@ After Dremio is setup, you can begin querying Iceberg tables. \
 
 
 ## Create some Iceberg Tables
-Work with Iceberg using Spark 
+Work with Iceberg using Spark. I have simplified the configuration and setup of spark using the python file called iceberg_spark.py. When you wish to use spark, you can import and call the function within. 
 
 Demo 1: 
-- Begin working with the code to learn how to create spark tables and perform some operations. \
+- Begin working with the code to learn how to create spark tables and perform some operations. 
+
 Demo 2: 
-- Run micro batches to insert data into an iceberg tables \
+- Run micro batches to insert data into an iceberg tables 
 
 Dremio:
 - While working with your iceberg tables, you can use Dremio to start query the results. Those results can then be used in external tools such as Tableau, Power BI, dbeaver, etc by connecting directly to Drmeio. 

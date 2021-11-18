@@ -65,8 +65,8 @@ You can chose to use the hive catalog, or a hadoop catalog. If you are using the
 ## Hadoop Catalog:
 If you wish to use the hadoop catalog, you will need to add the data lake source for the storage type you are using.
 Additionally, you will need to add an advanced property to the source
-- iceberg.catalog_type
- - hadoop
+- name=iceberg.catalog_type
+- value=hadoop
 
 
 *Note Minio requires extra steps outlined here: http://docs.dremio.com/data-sources/s3/#configuring-s3-for-minio

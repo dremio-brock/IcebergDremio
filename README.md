@@ -24,7 +24,7 @@ cd IcebergDremio
 Step 3: Configure conf/metastore-site.xml 
 Uncomment the type of storage you wish to use and fill in your account information
 
-*Note on first run with Minio, you will need to create a service account to get the key & secret. Hive will need to be restarted once the metastore-site.xml is updated.
+*Note on first run with Minio, it will automatically create a bucket with a  account key and secret minioadmin/minioadmin
    
 Step 4: Build and run
 

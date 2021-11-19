@@ -33,7 +33,14 @@ services:
     volumes:
     - ./notebook:/home/jovyan/work
     container_name: jupyter-iceberg
-    
+    command:
+      - jupyter
+      - lab
+      - --no-browser
+      - --ip='*'
+      - --NotebookApp.token='' 
+      - --NotebookApp.password=''
+      
   dremio:
     image: dremio/dremio-oss:19.0
     ports: 

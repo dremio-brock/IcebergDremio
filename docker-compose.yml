@@ -10,9 +10,10 @@ services:
       POSTGRES_PASSWORD: admin
       POSTGRES_USER: admin
       POSTGRES_DB: metastore_db
-    container_name: metastore-db
+    container_name: postgres
 
   hive-metastore:
+    platform: linux/x86_64
     build: .
     image: hive-metastore:latest
     ports:
@@ -32,7 +33,7 @@ services:
     - 8888:8888
     volumes:
     - ./notebook:/home/jovyan/work
-    container_name: jupyter-iceberg
+    container_name: jupyter
     command:
       - jupyter
       - lab
@@ -42,6 +43,7 @@ services:
       - --NotebookApp.password=''
       
   dremio:
+    platform: linux/x86_64
     image: dremio/dremio-oss:19.0
     ports: 
     - 9047:9047
@@ -50,7 +52,7 @@ services:
     volumes:
     - ./conf/metastore-site.xml:/opt/dremio/plugins/connectors/hive3.d/conf/core-site.xml
     - ./conf/metastore-site.xml:/opt/dremio/plugins/connectors/hive3-ee.d/conf/core-site.xml
-    container_name: dremio-iceberg
+    container_name: dremio
     
   storage:
     image: minio/minio
@@ -88,4 +90,3 @@ networks:
     default:
       name: iceberg
       driver: bridge
-    

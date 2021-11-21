@@ -1,7 +1,7 @@
 version: "3.5"
 
 services:
-  db:
+  metastore-db:
     image: postgres
     restart: always
     ports:
@@ -23,7 +23,7 @@ services:
     - ./conf/metastore-site.xml:/opt/apache-hive-metastore-3.0.0-bin/conf/metastore-site.xml
     container_name: hive-metastore
     depends_on:
-      - db
+      - metastore-db
       - storage
       
   notebook:
@@ -56,6 +56,7 @@ services:
     environment:
     #creates a default user for the Dremio cluster. user: dremio, password: dremio123
       - DREMIO_JAVA_EXTRA_OPTS=-Ddebug.addDefaultUser=true
+      - SERVER_GC_OPTS=-XX:+UseG1GC
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9047/"]
       interval: 5s

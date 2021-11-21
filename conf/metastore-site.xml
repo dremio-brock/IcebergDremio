@@ -28,19 +28,18 @@
         <name>javax.jdo.option.ConnectionPassword</name>
         <value>admin</value>
     </property>
-<!-- Minio -->
-<!--
+
 	<property>
         <name>metastore.warehouse.dir</name>
-        <value>s3a://{bucket}/{folder path}/</value>
+        <value>s3a://dremio/</value>
     </property>
     <property>
 		<name>fs.s3a.access.key</name>
-		<value></value>
+		<value>minioadmin</value>
 	</property>
 	<property>
 		<name>fs.s3a.secret.key</name>
-		<value></value>
+		<value>minioadmin</value>
 	</property>
 	<property>
 		<name>fs.s3a.connection.ssl.enabled</name>
@@ -58,7 +57,6 @@
         <name>fs.s3a.impl</name>
         <value>org.apache.hadoop.fs.s3a.S3AFileSystem</value>
     </property>
--->
 <!-- s3 -->
 <!--
 	<property>

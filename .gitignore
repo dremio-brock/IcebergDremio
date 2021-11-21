@@ -1,2 +1,3 @@
 minio
 notebook/.ipynb_checkpoints
+notebook/__pycache__

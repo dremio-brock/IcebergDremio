@@ -35,12 +35,8 @@ docker-compose up -d
 
 Step 5: Jupyter Notebook \
 \
-Login to your notebook from the web browser localhost:8888
-Your token can be obtained from using the docker log command
-```bash
-docker logs notebook
-```
-
+Login to your notebook from the web browser localhost:8888 \
+\
 Step 6: Modify your Config\
 \
 In the work directory, modify config.ini with your settings. If you are using minio, no changes are needed.\

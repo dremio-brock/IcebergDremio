@@ -11,6 +11,12 @@ findspark.init()
 
 
 def start_spark(storage, config_section, catalog_type):
+    """
+    Create a spark with the defaults set for a specific storage type and iceberg catalog settings
+    :param storage: adls, s3, minio
+    :param config_section: the section to look for storage settings
+    :param catalog_type: hive, hadoop, or glue catalog
+    """
     # add Iceberg dependency
     ICEBERG_VERSION="0.12.0"
     DEPENDENCIES="org.apache.iceberg:iceberg-spark3-runtime:{}".format(ICEBERG_VERSION)
@@ -67,11 +73,18 @@ def start_spark(storage, config_section, catalog_type):
         print('you use a storage type of minio, s3, or adls')
     
     if catalog_type == 'hive':
-        hive_uri = config[config_section]['hive_uri']
+        hive_uri = config[config_section]['HIVE_URI']
         conf.set("spark.sql.catalog.spark_catalog.type", "hive")
         conf.set("spark.sql.catalog.spark_catalog.uri", hive_uri)
     elif catalog_type == 'hadoop':
         conf.set("spark.sql.catalog.spark_catalog.type", "hadoop")
+    elif catalog_type == 'glue':
+        conf.set("spark.sql.catalog.spark_catalog", "org.apache.iceberg.spark.SparkCatalog ")
+        conf.set("spark.sql.catalog.spark_catalog.type", "org.apache.iceberg.aws.glue.GlueCatalog ")
+        conf.set("spark.sql.catalog.spark_catalog.catalog-impl", "hadoop")
+        conf.set("spark.sql.catalog.spark_catalog.io-impl", "org.apache.iceberg.aws.s3.S3FileIO")
+        conf.set("spark.sql.catalog.spark_catalog.lock-impl", "org.apache.iceberg.aws.glue.DynamoLockManager")
+        conf.set("spark.sql.catalog.spark_catalog.lock.table", "myGlueLockTable")
     else:
         print('you must select a catalog type')
 

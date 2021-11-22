@@ -24,7 +24,7 @@ cd IcebergDremio
 Step 3: Configure conf/metastore-site.xml 
 Uncomment the type of storage you wish to use and fill in your account information
 
-*Note on first run with Minio, it will automatically create a bucket with a  account key and secret minioadmin/minioadmin
+*Note on first run with Minio, it will automatically create a bucket with a  account key and secret minioadmin:minioadmin
    
 Step 4: Build and run
 
@@ -43,8 +43,7 @@ docker logs notebook
 
 Step 6: Modify your Config\
 \
-In the work directory, create a copy of the config-sample.ini and rename it to config.ini\
-open the new file and add in your config.\
+In the work directory, modify config.ini with your settings. If you are using minio, no changes are needed.\
 \
 If you wish to demo loading streaming data from an api such as the one used here you will need to obtain your own api keys.
 
@@ -52,26 +51,17 @@ If you wish to demo loading streaming data from an api such as the one used here
 ## Setup Dremio
 
 - Open dremio by going to the url localhost:9047
-- Accept the EULA and create a user for Dremio
-- Enable Iceberg in Dremio follow the instructions here for enabling iceberg in Dremio: http://docs.dremio.com/data-formats/iceberg-enabling/
+- A default username and password dremio:dremio123 has been created already
+- The Dremio startup script enables iceberg automatically as described here: http://docs.dremio.com/data-formats/iceberg-enabling/
 
-## Hive Catalog:
-You can chose to use the hive catalog, or a hadoop catalog. If you are using the hive catalog you will need to use hive as your source. docker-compose is mounting your metastore-site.xml to the proper hive conf directory in Dremio. 
+## Sources
+By default a Minio source has been created and added as well as the hive source. Steps to do so are outlined here: http://docs.dremio.com/data-sources/s3/#configuring-s3-for-minio\
+The default minio credentials are minioadmin:minioadmin\
+\
+**When querying from the hive source, the catalog should be set to iceberg.catalog_type=hive (default)\
+**When using a file based source, the catalog should be set to iceberg.catalog_type=hadoop (default)
 
-- Add your Hive datasource by clicking the + button next to "Data Lake"
-- Select Hive 3.x
-- Give the source a name, fill in the URL as "hive-metastore"
-
-## Hadoop Catalog:
-If you wish to use the hadoop catalog, you will need to add the data lake source for the storage type you are using.
-Additionally, you will need to add an advanced property to the source
-- name=iceberg.catalog_type
-- value=hadoop
-
-
-*Note Minio requires extra steps outlined here: http://docs.dremio.com/data-sources/s3/#configuring-s3-for-minio
-
-## 
+## Notes
 
 After Dremio is setup, you can begin querying Iceberg tables. \
 \

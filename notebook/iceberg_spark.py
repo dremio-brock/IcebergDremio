@@ -24,9 +24,6 @@ def start_spark(storage, config_section, catalog_type):
     # Read config file
     config = configparser.ConfigParser()
     config.read('config.ini')
-
-    # get the endpoint ip address, spark doesn't like docker hostnames
-    ENDPOINT = 'http://' + socket.gethostbyname('minio') + ':9000'
     
     # initialize sparkConf
     conf = SparkConf()
@@ -41,6 +38,8 @@ def start_spark(storage, config_section, catalog_type):
         ACCESS_KEY_ID = config[config_section]['ACCESS_KEY_ID']
         SECRET_ACCESS_KEY = config[config_section]['SECRET_ACCESS_KEY']
         
+        # get the endpoint ip address, spark doesn't like docker hostnames
+        ENDPOINT = 'http://' + socket.gethostbyname('minio') + ':9000'
         
         # add dependencies
         DEPENDENCIES+=",org.apache.hadoop:hadoop-aws:3.2.0"

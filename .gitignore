@@ -1,3 +1,8 @@
 minio
 notebook/.ipynb_checkpoints
 notebook/__pycache__
+notebook/metastore_db/
+notebook/spark-warehouse/
+notebook/derby.log
+notebook/config.ini
+conf/metastore-site.xml

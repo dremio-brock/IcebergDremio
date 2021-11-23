@@ -21,7 +21,7 @@ git clone https://github.com/dremio-brock/IcebergDremio.git
 cd IcebergDremio
 ```
 
-Step 3: Configure conf/metastore-site.xml 
+Step 3: Copy conf/metastore-site-default.xml  and rename to conf/metastore-site.xml
 Uncomment the type of storage you wish to use and fill in your account information
 
 *Note on first run with Minio, it will automatically create a bucket with a  account key and secret minioadmin:minioadmin
@@ -37,7 +37,7 @@ Step 5: Jupyter Notebook \
 \
 Login to your notebook from the web browser localhost:8888 \
 \
-Step 6: Modify your Config\
+Step 6: Create a copy of config-sample.ini as config.ini and update it with your values\
 \
 In the work directory, modify config.ini with your settings. If you are using minio, no changes are needed.\
 \

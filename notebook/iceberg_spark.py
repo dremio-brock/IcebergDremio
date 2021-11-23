@@ -18,7 +18,7 @@ def start_spark(storage, config_section, catalog_type):
     :param catalog_type: hive, hadoop, or glue catalog
     """
     # add Iceberg dependency
-    ICEBERG_VERSION="0.12.0"
+    ICEBERG_VERSION="0.12.1"
     DEPENDENCIES="org.apache.iceberg:iceberg-spark3-runtime:{}".format(ICEBERG_VERSION)
 
     # Read config file
@@ -41,6 +41,7 @@ def start_spark(storage, config_section, catalog_type):
         ACCESS_KEY_ID = config[config_section]['ACCESS_KEY_ID']
         SECRET_ACCESS_KEY = config[config_section]['SECRET_ACCESS_KEY']
         
+        
         # add dependencies
         DEPENDENCIES+=",org.apache.hadoop:hadoop-aws:3.2.0"
         DEPENDENCIES+=",com.amazonaws:aws-java-sdk-bundle:1.11.375"
@@ -50,7 +51,33 @@ def start_spark(storage, config_section, catalog_type):
         conf.set("spark.hadoop.fs.s3a.secret.key", SECRET_ACCESS_KEY)
         conf.set("spark.hadoop.fs.s3a.endpoint", ENDPOINT)
         conf.set("spark.hadoop.fs.s3a.connection.ssl.enabled", "false")
-    elif storage == 's3':
+    elif storage == 's3' and catalog_type == 'glue':
+      
+        # Get AWS credentials
+        ACCESS_KEY_ID = config[config_section]['ACCESS_KEY_ID']
+        SECRET_ACCESS_KEY = config[config_section]['SECRET_ACCESS_KEY']
+        AWS_REGION = config[config_section]['AWS_REGION']
+        
+        # set AWS env variables
+        environ["AWS_ACCESS_KEY_ID"] = ACCESS_KEY_ID
+        environ["AWS_SECRET_ACCESS_KEY"] = SECRET_ACCESS_KEY
+        environ["AWS_REGION"] = AWS_REGION
+        
+        # add dependencies
+        DEPENDENCIES+=",software.amazon.awssdk:bundle:2.15.40"
+        DEPENDENCIES+=",software.amazon.awssdk:url-connection-client:2.15.40"
+        
+        # add spark conf
+        conf.set("spark.sql.catalog.spark_catalog","org.apache.iceberg.spark.SparkCatalog")
+        conf.set("spark.sql.catalog.spark_catalog.io-impl","org.apache.iceberg.aws.s3.S3FileIO")
+        conf.set("spark.sql.catalog.spark_catalog","org.apache.iceberg.spark.SparkCatalog")
+        conf.set("spark.sql.catalog.spark_catalog.catalog-impl","org.apache.iceberg.aws.glue.GlueCatalog")
+        conf.set("spark.sql.catalog.spark_catalog.lock-impl","org.apache.iceberg.aws.glue.DynamoLockManager")
+        conf.set("spark.sql.catalog.spark_catalog.lock.table","myGlueLockTable")
+        
+    elif storage == 's3' and catalog_type in ['hadoop','hive']:
+        print('Using S3 with Hive or Hadoop')
+        # Get AWS credentials
         ACCESS_KEY_ID = config[config_section]['ACCESS_KEY_ID']
         SECRET_ACCESS_KEY = config[config_section]['SECRET_ACCESS_KEY']
         
@@ -61,7 +88,7 @@ def start_spark(storage, config_section, catalog_type):
         # add spark conf
         conf.set("spark.hadoop.fs.s3a.access.key", ACCESS_KEY_ID)
         conf.set("spark.hadoop.fs.s3a.secret.key", SECRET_ACCESS_KEY)
-        
+
     elif storage == 'adls':
         spark.conf.set("fs.azure.account.key." + storageAccountName + ".blob.core.windows.net", secret)
         
@@ -78,15 +105,7 @@ def start_spark(storage, config_section, catalog_type):
         conf.set("spark.sql.catalog.spark_catalog.uri", hive_uri)
     elif catalog_type == 'hadoop':
         conf.set("spark.sql.catalog.spark_catalog.type", "hadoop")
-    elif catalog_type == 'glue':
-        conf.set("spark.sql.catalog.spark_catalog", "org.apache.iceberg.spark.SparkCatalog ")
-        conf.set("spark.sql.catalog.spark_catalog.type", "org.apache.iceberg.aws.glue.GlueCatalog ")
-        conf.set("spark.sql.catalog.spark_catalog.catalog-impl", "hadoop")
-        conf.set("spark.sql.catalog.spark_catalog.io-impl", "org.apache.iceberg.aws.s3.S3FileIO")
-        conf.set("spark.sql.catalog.spark_catalog.lock-impl", "org.apache.iceberg.aws.glue.DynamoLockManager")
-        conf.set("spark.sql.catalog.spark_catalog.lock.table", "myGlueLockTable")
-    else:
-        print('you must select a catalog type')
+
 
     # set environment dependencies
     environ['PYSPARK_SUBMIT_ARGS'] = '--packages {} pyspark-shell'.format(DEPENDENCIES)

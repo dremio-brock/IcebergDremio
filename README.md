@@ -5,7 +5,9 @@ This demo project shows how to use Dremio to query Apache Iceberg tables on ADLS
 
 ## Quick start
 
-Clone the project, cd into the directory and run `docker-compose up`. This will spin up jupyter notebook, dremio and minio. Go to http://localhost:8888 and open the work/demo 1.ipynb notebook and run it. Once all cells are executed, open http://localhost:9047 (username: dremio, password: dremio123) to login to Dremio and query the hive source. Minio can be browsed at http://localhost:9000 (username: minioadmin, password: minioadmin)
+- Clone the project, cd into the directory and run `docker-compose up -d`. This will spin up jupyter notebook, dremio and minio.
+- Go to http://localhost:8888 and open the work/demo 1.ipynb notebook and run it. 
+- Once you have created a table and performed some operations, open http://localhost:9047 (username: dremio, password: dremio123) to login to Dremio and query the hive source. Minio can be browsed at http://localhost:9000 (username: minioadmin, password: minioadmin)
 
 ## Installation
 

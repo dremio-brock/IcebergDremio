@@ -1,5 +1,5 @@
 
-# Iceberg on ADLS / S3 / MINIO with Dremio via Hive or Hadoop catalog
+# Iceberg on ADLS / S3 / MINIO with Dremio via Hive, Hadoop, or Glue catalog
 
 This demo project shows how to use Dremio to query Apache Iceberg tables on ADLS, S3, or MINIO.
 
